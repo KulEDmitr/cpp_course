@@ -141,7 +141,7 @@ big_integer &big_integer::operator*=(big_integer const &rhs) {
         *this = -(*this);
     }
     big_integer hlp = (rhs.vec.back()) ? -rhs : rhs;
-    my_vector<uint32_t> ans;
+    my_vector ans;
     ans.assign(vec.size() + hlp.vec.size(), 0);
     for (size_t i = 0; i < vec.size(); ++i) {
         uint32_t carry = 0;
@@ -232,10 +232,10 @@ std::pair<big_integer, big_integer> div_mod(big_integer const &a, big_integer co
     uint32_t b_ = a2.vec[a2.vec.size() - 2];
     uint64_t a__;
     size_t a_size = a1.vec.size(), b_size = a2.vec.size();
-    my_vector<uint32_t> ans;
+    my_vector ans;
     ans.assign(a_size - b_size + 1, 0);
     size_t pos = a_size - b_size;
-    my_vector<uint32_t> u64;
+    my_vector u64;
     if (pos == 0) {
         a__ = a1.vec[a_size - 2] / b_;
         tmp.vec[0] = static_cast<uint32_t>(a__);
@@ -443,7 +443,7 @@ std::string to_string(big_integer const &a) {
         b = -b;
         res += '-';
     }
-    my_vector<uint32_t> blocks(b.vec.size());
+    my_vector blocks(b.vec.size());
     size_t len = 0;
     while (b > 0) {
         std::pair<big_integer, uint32_t> block = div_by_short(b, MAX);

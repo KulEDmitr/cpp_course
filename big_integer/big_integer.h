@@ -59,7 +59,7 @@ struct big_integer {
     friend std::string to_string(big_integer const &a);
 
 private:
-    my_vector<uint32_t> vec;
+    my_vector vec;
 };
 
 big_integer operator+(big_integer a, big_integer const &b);
