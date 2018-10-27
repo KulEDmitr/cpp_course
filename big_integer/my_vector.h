@@ -5,16 +5,15 @@
 #include <memory>
 #include <cstdint>
 
-const int SIZE = 256;
+const int SIZE = 128;
 
-template<typename T>
 struct my_vector {
 
-    void assign(size_t new_len, T element);
+    void assign(size_t new_len, uint32_t element);
 
     my_vector();
     explicit my_vector(size_t i);
-    my_vector(my_vector<T> const &other);
+    my_vector(my_vector const &other);
 
     size_t size() const;
     void resize(size_t new_len);
@@ -22,26 +21,24 @@ struct my_vector {
 
     ~my_vector();
 
-    T &back();
-    T back() const;
-    void push_back(T element);
+    uint32_t &back();
+    const uint32_t& back() const;
+    void push_back(uint32_t element);
     void pop_back();
 
-    T operator[](size_t id) const;
-    T &operator[](size_t id);
+    const uint32_t &operator[](size_t id) const;
+    uint32_t &operator[](size_t id);
 
-    my_vector<T> &operator=(my_vector<T> const &other);
+    my_vector &operator=(my_vector const &other);
 
     bool operator==(my_vector const &other) const ;
 
 private:
     size_t size_of_object;
-    bool is_on_heap;
+    bool is_on_heap = false;
 
-    T small_obj[SIZE];
-    std::shared_ptr<std::vector<T>> big_obj;
-
+    uint32_t small_obj[SIZE];
+    std::shared_ptr<std::vector<uint32_t>> big_obj;
 };
 
-#include "my_vector_impl.h"
 #endif

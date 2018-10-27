@@ -1,15 +1,16 @@
-#ifndef MY_VECTOR_IMPL_H
-#define MY_VECTOR_IMPL_H
-
 #include <cstring>
 #include <memory>
 #include "my_vector.h"
 
-template <typename T>
-void my_vector<T>::assign(size_t const new_len, T const element) {
+typedef std::vector<uint32_t> vec_u32;
+
+void my_vector::assign(size_t const new_len, uint32_t const element) {
+    if (is_on_heap) {
+        check_unique();
+    }
     size_of_object = new_len;
     if (new_len > SIZE) {
-        new(&big_obj) std::shared_ptr<std::vector<T>>(new std::vector<T>(new_len, element));
+        new(&big_obj) std::shared_ptr<vec_u32>(new vec_u32(new_len, element));
         is_on_heap = true;
     } else {
         for (size_t i = 0; i < new_len; ++i) {
@@ -19,19 +20,16 @@ void my_vector<T>::assign(size_t const new_len, T const element) {
     }
 }
 
-template <typename T>
-my_vector<T>::my_vector() : size_of_object(0), is_on_heap(false) {}
+my_vector::my_vector() : size_of_object(0), is_on_heap(false) {}
 
-template <typename T>
-my_vector<T>::my_vector(size_t const size) {
+my_vector::my_vector(size_t const size) {
     this->assign(size, 0);
 }
 
-template<typename T>
-my_vector<T>::my_vector(const my_vector<T> &other) :
+my_vector::my_vector(const my_vector &other) :
         is_on_heap(other.is_on_heap), size_of_object(other.size_of_object) {
     if (is_on_heap) {
-        big_obj = std::make_shared<std::vector<T>>(*other.big_obj);
+        big_obj = std::make_shared<vec_u32>(*other.big_obj);
     } else {
         for (size_t i = 0; i < size_of_object; ++i) {
             small_obj[i] = other.small_obj[i];
@@ -39,9 +37,8 @@ my_vector<T>::my_vector(const my_vector<T> &other) :
     }
 }
 
-template <typename T>
-void my_vector<T>::resize(size_t new_len) {
-    if (is_on_heap && size_of_object > SIZE) {
+void my_vector::resize(size_t new_len) {
+    if (is_on_heap) {
         check_unique();
     }
     if (new_len <= SIZE) {
@@ -58,9 +55,9 @@ void my_vector<T>::resize(size_t new_len) {
         is_on_heap = false;
     } else {
         if (is_on_heap) {
-            big_obj = std::make_shared<std::vector<T>>(*big_obj);
+            big_obj = std::make_shared<vec_u32>(*big_obj);
         } else {
-            new(&big_obj) std::shared_ptr<std::vector<T>>(new std::vector<T>(1, small_obj[0]));
+            new(&big_obj) std::shared_ptr<vec_u32>(new vec_u32(1, small_obj[0]));
             for (size_t i = 1; i < new_len; ++i) {
                 big_obj->push_back((i < size_of_object) ? small_obj[i] : 0);
             }
@@ -70,40 +67,34 @@ void my_vector<T>::resize(size_t new_len) {
     size_of_object = new_len;
 }
 
-template <class T>
-void my_vector<T>::check_unique() {
+void my_vector::check_unique() {
     if (!big_obj.unique()) {
-        big_obj = std::make_shared<std::vector<T>>(*big_obj);
+        big_obj = std::make_shared<vec_u32>(*big_obj);
     }
 }
 
-template <typename T>
-my_vector<T>::~my_vector() {
+my_vector::~my_vector() {
     if (is_on_heap) {
         big_obj.reset();
     }
 }
 
-template <typename T>
-size_t my_vector<T>::size() const {
+size_t my_vector::size() const {
     return size_of_object;
 }
 
-template <typename T>
-T &my_vector<T>::back() {
+uint32_t &my_vector::back() {
     if (is_on_heap) {
         check_unique();
     }
     return this->operator[](size_of_object - 1);
 }
 
-template <typename T>
-T my_vector<T>::back() const {
+const uint32_t &my_vector::back() const {
     return this->operator[](size_of_object - 1);
 }
 
-template <typename T>
-void my_vector<T>::push_back(T element) {
+void my_vector::push_back(uint32_t element) {
     if (is_on_heap) {
         check_unique();
     }
@@ -120,8 +111,7 @@ void my_vector<T>::push_back(T element) {
     }
 }
 
-template <typename T>
-void my_vector<T>::pop_back() {
+void my_vector::pop_back() {
     if (is_on_heap) {
         check_unique();
     }
@@ -133,16 +123,14 @@ void my_vector<T>::pop_back() {
     }
 }
 
-template <typename T>
-T my_vector<T>::operator[](size_t id) const {
+const uint32_t &my_vector::operator[](size_t id) const {
     if (is_on_heap) {
         return big_obj->operator[](id);
     }
     return small_obj[id];
 }
 
-template <typename T>
-T &my_vector<T>::operator[](size_t id) {
+uint32_t &my_vector::operator[](size_t id) {
     if (is_on_heap) {
         check_unique();
         return big_obj->operator[](id);
@@ -150,12 +138,11 @@ T &my_vector<T>::operator[](size_t id) {
     return small_obj[id];
 }
 
-template <typename T>
-my_vector<T> &my_vector<T>::operator=(const my_vector<T> &other) {
+my_vector &my_vector::operator=(const my_vector &other) {
     is_on_heap = other.is_on_heap;
     size_of_object = other.size_of_object;
     if (is_on_heap) {
-        big_obj = std::make_shared<std::vector<T>>(*other.big_obj);
+        big_obj = std::make_shared<vec_u32>(*other.big_obj);
     } else {
         for (size_t i = 0; i < size_of_object; ++i) {
             small_obj[i] = other.small_obj[i];
@@ -164,8 +151,7 @@ my_vector<T> &my_vector<T>::operator=(const my_vector<T> &other) {
     return *this;
 }
 
-template<typename T>
-bool my_vector<T>::operator==(my_vector const &other) const {
+bool my_vector::operator==(my_vector const &other) const {
     if (size() != other.size()) {
         return false;
     }
@@ -180,5 +166,3 @@ bool my_vector<T>::operator==(my_vector const &other) const {
         return true;
     }
 }
-
-#endif
