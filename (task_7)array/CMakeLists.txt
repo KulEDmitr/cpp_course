@@ -3,4 +3,5 @@ project(task_7)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(task_7 main.cpp Array.hpp Array.h functions.h functions.hpp TestType.h TestType.hpp)
+add_executable(task_7 main.cpp Array.hpp Array.h
+        functions.h functions.hpp TestType.h TestType.hpp printVal.h printVal.hpp)

@@ -7,7 +7,7 @@ Array<Type>::Array() : mData(nullptr), mSize(0) {}
 
 template<class Type>
 Array<Type>::Array(size_t size, const Type& value) : mSize(size) {
-    mData = new uChar[mSize * sizeof(Type)];
+    mData = new uint8_t[mSize * sizeof(Type)];
     Type* ptr = (Type*) mData;
     for (size_t i = 0; i < mSize; ++i) {
         new(ptr + i) Type(value);
@@ -16,7 +16,7 @@ Array<Type>::Array(size_t size, const Type& value) : mSize(size) {
 
 template<class Type>
 Array<Type>::Array(const Array<Type>& other) : mSize(other.mSize) {
-    mData = new uChar[mSize * sizeof(Type)];
+    mData = new uint8_t[mSize * sizeof(Type)];
     Type* ptr = (Type*) mData;
     for (size_t i = 0; i < mSize; ++i) {
         new(ptr + i) Type(other[i]);
@@ -58,7 +58,23 @@ template<class Type>
 size_t Array<Type>::size() const { return mSize; }
 
 template<class Type>
-void Array<Type>::swap(Array& other) {
+void Array<Type>::swap(Array<Type>& other) {
     std::swap(mData, other.mData);
     std::swap(mSize, other.mSize);
+}
+
+
+///TASK_9
+template<class Type>
+Array<Type>::Array(Array &&other) {
+    mData = other.mData;
+    other.mData = nullptr;
+    mSize = other.mSize;
+    other.mSize = 0;
+}
+
+template<class Type>
+Array<Type>& Array<Type>::operator=(Array &&other) {
+    Array<Type>(std::move(other)).swap(*this);
+    return *this;
 }
