@@ -146,12 +146,11 @@ int main() {
     }
 
     {
-        cout << "\n-----BLOCK 7-----    -TASK 9- (toPair sorry, watch values of pair in debug)\n";
+        cout << "\n-----BLOCK 7-----    -TASK 9- (toPair ...sorry, watch values of pair in debug)\n";
         auto t = std::make_tuple(0, 3.5, "Hello");
         std::pair<double, char const* > p = makePair<1, 2>(t);
         auto tt = std::make_tuple(0, 3.5, "Hello", t, t, t, 786);
         std::pair<std::tuple<int, double, string>, std::tuple<int, double, string>> pp = makePair<3, 5>(tt);
-        int f = 0;
     }
 
     return 0;

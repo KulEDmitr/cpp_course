@@ -42,14 +42,14 @@ Array<Type>& Array<Type>::operator=(const Array& other) {
 
 template<class Type>
 Type& Array<Type>::operator[](size_t i) {
-    if (mSize <= i || i < 0) throw "Going beyond arrays";
+    if (mSize <= i || i < 0) throw "Going out of range";
     Type* ptr = (Type*) mData;
     return *(ptr + i);
 }
 
 template<class Type>
 const Type& Array<Type>::operator[](size_t i) const {
-    if (mSize <= i || i < 0) throw "Going beyond arrays";
+    if (mSize <= i || i < 0) throw "Going out of range";
     Type* ptr = (Type*) mData;
     return *(ptr + i);
 }

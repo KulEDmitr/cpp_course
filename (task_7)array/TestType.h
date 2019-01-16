@@ -3,7 +3,7 @@
 #include <cstddef>
 #include "Array.h"
 
-template<typename Type>
+template<class Type>
 struct TestType {
 
     TestType() = delete;
